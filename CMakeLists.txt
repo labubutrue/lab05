@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 
 project(lab05 VERSION 1.0.0)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_compile_options(-Wno-error=maybe-uninitialized)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

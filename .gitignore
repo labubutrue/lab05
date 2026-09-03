@@ -17,3 +17,4 @@ coverage/
 *.profdata
 Testing/
 third-party/gtest/build/
+coverage.info

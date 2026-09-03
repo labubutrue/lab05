@@ -1,0 +1,57 @@
+name: Lab05 Tests and Coverage
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ lcov
+
+      - name: Configure
+        run: |
+          cmake -S . -B build \
+            -DBUILD_TESTS=ON \
+            -DENABLE_COVERAGE=ON \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Capture coverage
+        run: |
+          lcov --capture \
+            --directory build \
+            --output-file coverage.info \
+            --ignore-errors mismatch
+
+      - name: Filter coverage
+        run: |
+          lcov --extract coverage.info \
+            '*/banking/*' \
+            --output-file coverage.info \
+            --ignore-errors unused
+
+      - name: Show coverage
+        run: lcov --summary coverage.info
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage.info
+          format: lcov

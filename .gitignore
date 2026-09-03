@@ -8,3 +8,12 @@ cmake_install.cmake
 Makefile
 .DS_Store
 .idea/
+_build/
+coverage/
+*.gcda
+*.gcno
+*.gcov
+*.profraw
+*.profdata
+Testing/
+third-party/gtest/build/

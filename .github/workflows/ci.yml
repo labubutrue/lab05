@@ -1,0 +1,46 @@
+name: Lab04 CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            compiler: g++
+            name: Linux GCC
+          - os: ubuntu-latest
+            compiler: clang++
+            name: Linux Clang
+          - os: windows-latest
+            compiler: cl
+            name: Windows MSVC
+
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Linux
+        if: runner.os != 'Windows'
+        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
+
+      - name: Build Linux
+        if: runner.os != 'Windows'
+        run: cmake --build build
+
+      - name: Configure Windows
+        if: runner.os == 'Windows'
+        run: cmake -S . -B build
+
+      - name: Build Windows
+        if: runner.os == 'Windows'
+        run: cmake --build build --config Release

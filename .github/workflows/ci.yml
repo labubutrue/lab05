@@ -40,7 +40,7 @@ jobs:
 
       - name: Configure Windows
         if: runner.os == 'Windows'
-        run: cmake -S . -B build
+        run: cmake -S . -B build -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
       - name: Build Windows
         if: runner.os == 'Windows'
